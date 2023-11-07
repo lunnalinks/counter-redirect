@@ -75,6 +75,15 @@ client.connect(async function (err) {
         return res.redirect(301, `/links`)
     });
 
+    // 
+    app.get('/reset', async (req, res) => {
+        const { link } = req.query;
+        try {
+            await client.query('UPDATE links SET clicks = 0 WHERE TRUE;')
+        } catch (error) {}
+        return res.redirect(301, `/links`)
+    })
+
     app.listen(PORT, () => {
         console.log(`Example app listening on port ${PORT}`)
     })
