@@ -1,27 +1,27 @@
 const express = require('express')
 const app = express()
-const port = 80
 
 const dotenv = require('dotenv');
 dotenv.config();
 
 const { Client } = require('pg')
 const {
-    USER,
+    DB_USER,
     HOST,
     DATABASE,
     PASSWORD,
     PORT,
+    DB_PORT,
     DEFAULT_URL,
     MAX_CLICKS_PER_LINK
 } = process.env;
 
 const client = new Client({
-    user: USER,
+    user: DB_USER,
     host: HOST,
     database: DATABASE,
     password: PASSWORD,
-    port: PORT,
+    port: DB_PORT,
     ssl: true
 })
 
@@ -75,7 +75,7 @@ client.connect(async function (err) {
         return res.redirect(301, `/links`)
     });
 
-    app.listen(port, () => {
-        console.log(`Example app listening on port ${port}`)
+    app.listen(PORT, () => {
+        console.log(`Example app listening on port ${PORT}`)
     })
 });
