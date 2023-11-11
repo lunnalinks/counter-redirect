@@ -29,7 +29,7 @@ const qtd = MAX_CLICKS_PER_LINK;
 const default_url = DEFAULT_URL;
 
 const linear_order = 'SELECT * FROM links WHERE clicks < $1 ORDER BY id ASC LIMIT 1;';
-const random_order = 'SELECT id, link, clicks FROM links WHERE clicks < $1 GROUP BY id, link, clicks LIMIT 1;';
+const random_order = 'SELECT id, link, clicks FROM links WHERE clicks < $1 ORDER BY clicks ASC LIMIT 1;';
 
 client.connect(async function (err) {
     if (err) throw err;
