@@ -34,7 +34,7 @@ client.connect(async function (err) {
 
     // REDIRECT
     app.get('/visit', async (req, res) => {
-        const { rows } = await client.query('SELECT id, link, clicks FROM links WHERE clicks < $1 GROUP BY id, link, clicks LIMIT 1;', [qtd])
+        const { rows } = await client.query('SELECT * FROM links WHERE clicks < $1 ORDER BY id ASC LIMIT 1;', [qtd])
         console.log(rows);
         if (!rows.length) return res.redirect(default_url);
         await client.query('UPDATE links SET clicks=$2 WHERE link=$1', [rows[0].link, rows[0].clicks + 1])
@@ -42,7 +42,7 @@ client.connect(async function (err) {
     });
 
     app.get('/', async (req, res) => {
-        const { rows } = await client.query('SELECT * FROM links WHERE clicks < 50 ORDER BY id ASC LIMIT 1;', [qtd])
+        const { rows } = await client.query('SELECT * FROM links WHERE clicks < $1 ORDER BY id ASC LIMIT 1;', [qtd])
         return res.json({
             count: rows.length,
             available_links: rows.map(r => (r.link))
