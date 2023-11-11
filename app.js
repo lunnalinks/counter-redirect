@@ -39,7 +39,8 @@ client.connect(async function (err) {
     // REDIRECT
     app.get('/visit', async (req, res) => {
         const { type } = req.query;
-        const { rows } = await client.query(random_order, [qtd])
+        const { rows } = await client.query(type == 'random' ? random_order : linear_order, [qtd])
+        //const { rows } = await client.query(random_order, [qtd])
         //const { rows } = await client.query(linear_order, [qtd])
         console.log(rows);
         if (!rows.length) return res.redirect(default_url);
@@ -48,7 +49,9 @@ client.connect(async function (err) {
     });
 
     app.get('/', async (req, res) => {
-        const { rows } = await client.query(random_order, [qtd])
+        const { type } = req.query;
+        const { rows } = await client.query(type == 'random' ? random_order : linear_order, [qtd])
+        //const { rows } = await client.query(random_order, [qtd])
         //const { rows } = await client.query(linear_order, [qtd])
         return res.json({
             count: rows.length,
