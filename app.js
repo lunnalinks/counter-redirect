@@ -28,13 +28,16 @@ const client = new Client({
 const qtd = MAX_CLICKS_PER_LINK;
 const default_url = DEFAULT_URL;
 
+const linear_order = 'SELECT * FROM links WHERE clicks < $1 ORDER BY id ASC LIMIT 1;';
+const random_order = 'SELECT id, link, clicks FROM links WHERE clicks < $1 GROUP BY id, link, clicks LIMIT 1;';
+
 client.connect(async function (err) {
     if (err) throw err;
     console.log("Connected!");
 
     // REDIRECT
     app.get('/visit', async (req, res) => {
-        const { rows } = await client.query('SELECT * FROM links WHERE clicks < $1 ORDER BY id ASC LIMIT 1;', [qtd])
+        const { rows } = await client.query(linear_order, [qtd])
         console.log(rows);
         if (!rows.length) return res.redirect(default_url);
         await client.query('UPDATE links SET clicks=$2 WHERE link=$1', [rows[0].link, rows[0].clicks + 1])
@@ -42,7 +45,7 @@ client.connect(async function (err) {
     });
 
     app.get('/', async (req, res) => {
-        const { rows } = await client.query('SELECT * FROM links WHERE clicks < $1 ORDER BY id ASC LIMIT 1;', [qtd])
+        const { rows } = await client.query(linear_order, [qtd])
         return res.json({
             count: rows.length,
             available_links: rows.map(r => (r.link))
