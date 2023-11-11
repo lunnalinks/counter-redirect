@@ -42,7 +42,7 @@ client.connect(async function (err) {
     });
 
     app.get('/', async (req, res) => {
-        const { rows } = await client.query('SELECT id, link, clicks FROM links WHERE clicks < $1  GROUP BY id, clicks, link;', [qtd])
+        const { rows } = await client.query('SELECT * FROM links WHERE clicks < 50 ORDER BY id ASC LIMIT 1;', [qtd])
         return res.json({
             count: rows.length,
             available_links: rows.map(r => (r.link))
